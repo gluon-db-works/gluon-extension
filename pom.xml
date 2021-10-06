@@ -39,7 +39,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/acc-enterprise-edition/backend-runtime</url>
+            <url>https://maven.pkg.github.com/gluon-db-works/gluon-extension</url>
         </repository>
     </distributionManagement>
 
