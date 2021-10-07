@@ -6,7 +6,7 @@
     <groupId>org.gluon</groupId>
     <artifactId>gluon-extension-parent</artifactId>
 
-    <version>1.0.1</version>
+    <version>${project.version}</version>
 
     <packaging>pom</packaging>
     <name>Gluon Extension - Parent</name>
@@ -14,7 +14,9 @@
         <module>runtime</module>
         <module>deployment</module>
     </modules>
+
     <properties>
+        <project.version>1.0.2</project.version>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <failsafe-plugin.version>${surefire-plugin.version}</failsafe-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
