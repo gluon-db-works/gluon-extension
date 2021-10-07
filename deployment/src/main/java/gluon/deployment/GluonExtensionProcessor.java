@@ -34,7 +34,6 @@ public class GluonExtensionProcessor {
                 .build()) {
             classCreator.addAnnotation(Singleton.class);
             MethodCreator method = classCreator.getMethodCreator("sayHello", String.class).setModifiers(Opcodes.ACC_PUBLIC);
-            ResultHandle ret = method.readStaticField(FieldDescriptor.of(String.class, "MAX_VALUE", int.class));
             AssignableResultHandle val = method.createVariable(String.class);
             method.assign(val, method.load("HELLO!"));
             // ResultHandle ret = method.readStaticField(FieldDescriptor.of(String.class, "MAX_VALUE", int.class));
