@@ -7,6 +7,7 @@ import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.ApplicationIndexBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.gizmo.*;
@@ -36,8 +37,8 @@ public class GluonExtensionProcessor {
     }
 
     @BuildStep
-    void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
-        LOGGER.info("Before analize annotations from combined index");
+    void analizeAnnotationsFromApplicationIndex(ApplicationIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
+        LOGGER.info("Before analize annotations from application index");
         DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
         IndexView index = combinedIndexBuildItem.getIndex();
 
@@ -65,12 +66,11 @@ public class GluonExtensionProcessor {
         }
     }
 
-
     @BuildStep
-    void analizeAnnotationsFromArchiveIndex(BeanArchiveIndexBuildItem beanArchiveIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
-        LOGGER.info("Before analize annotations from achive index");
+    void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
+        LOGGER.info("Before analize annotations from combined index");
         DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
-        IndexView index = beanArchiveIndexBuildItem.getIndex();
+        IndexView index = combinedIndexBuildItem.getIndex();
 
         for (var module : index.getKnownModules()) {
             LOGGER.info("module: " + module.name());
