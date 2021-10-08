@@ -1,4 +1,4 @@
-package gluon.runtime.annotations;
+package gluon.annotations;
 
 public enum Source {
     ResultSet, Code
