@@ -35,14 +35,8 @@ public class GluonExtensionProcessor {
         return new FeatureBuildItem(FEATURE);
     }
 
-    @Inject
-    CombinedIndexBuildItem combinedIndexBuildItem;
-
-    @Inject
-    BeanArchiveIndexBuildItem beanArchiveIndexBuildItem;
-
     @BuildStep
-    void analizeAnnotationsFromCombinedIndex() {
+    void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem) {
         LOGGER.info("Before analize annotations from combined index");
         DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
         IndexView index = combinedIndexBuildItem.getIndex();
@@ -73,7 +67,7 @@ public class GluonExtensionProcessor {
 
 
     @BuildStep
-    void analizeAnnotationsFromArchiveIndex() {
+    void analizeAnnotationsFromArchiveIndex(BeanArchiveIndexBuildItem beanArchiveIndexBuildItem) {
         LOGGER.info("Before analize annotations from achive index");
         DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
         IndexView index = beanArchiveIndexBuildItem.getIndex();
