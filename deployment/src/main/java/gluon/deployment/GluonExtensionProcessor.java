@@ -16,7 +16,7 @@ import org.jboss.jandex.IndexView;
 import org.objectweb.asm.Opcodes;
 
 import javax.inject.Singleton;
-import java.util.logging.Logger;
+import org.jboss.logging.Logger;
 
 // SEE: https://quarkus.io/guides/writing-extensions#build-step-processors
 // SEE: https://github.com/quarkusio/gizmo/blob/main/src/test/java/io/quarkus/gizmo/VariableAssignmentTestCase.java
@@ -26,7 +26,7 @@ public class GluonExtensionProcessor {
 
     private static final String FEATURE = "gluon-extension";
 
-    private static final Logger LOG = Logger.getLogger("GluonExtensionProcessor");
+    private static final Logger LOGGER = Logger.getLogger(GluonExtensionProcessor.class);
 
     @BuildStep
     FeatureBuildItem feature() {
@@ -49,22 +49,23 @@ public class GluonExtensionProcessor {
             method.returnValue(val);
         }
 
+        LOGGER.info("Before analize annotations");
         DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
         IndexView index = combinedIndexBuildItem.getIndex();
         for (AnnotationInstance repositoryDeclaration : index.getAnnotations(SQL_REPOSITORY)) {
             AnnotationTarget annotationTarget = repositoryDeclaration.target();
             if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
                 DotName dotName = annotationTarget.asClass().name();
-                LOG.info(dotName + " is class");
+                LOGGER.info(dotName + " is class");
             } else if (AnnotationTarget.Kind.TYPE.equals(annotationTarget.kind())) {
                 var targetType = annotationTarget.asType().toString();
-                LOG.info(targetType + " is type");
+                LOGGER.info(targetType + " is type");
             } else {
                 var kind = annotationTarget.kind();
                 var target = annotationTarget.toString();
-                LOG.info(target + " has kind " + kind);
+                LOGGER.warn(target + " has kind " + kind);
             }
-            System.out.printf("found element with annotation " + SQL.Repository.class.getName());
+            System.out.println("found element with annotation " + SQL.Repository.class.getName());
         }
     }
 

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.gluon</groupId>
         <artifactId>gluon-extension-parent</artifactId>
-        <version>1.0.9</version>
+        <version>1.0.10</version>
     </parent>
 
     <artifactId>gluon-extension</artifactId>
