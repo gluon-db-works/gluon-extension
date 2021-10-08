@@ -2,6 +2,7 @@ package gluon.deployment;
 
 import gluon.runtime.annotations.SQL;
 import gluon.runtime.utils.ISayHello;
+import io.quarkus.arc.deployment.BeanArchiveIndexBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -37,6 +38,70 @@ public class GluonExtensionProcessor {
     @Inject
     CombinedIndexBuildItem combinedIndexBuildItem;
 
+    @Inject
+    BeanArchiveIndexBuildItem beanArchiveIndexBuildItem;
+
+    @BuildStep
+    void analizeAnnotationsFromCombinedIndex() {
+        LOGGER.info("Before analize annotations from combined index");
+        DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
+        IndexView index = combinedIndexBuildItem.getIndex();
+
+        for (var module : index.getKnownModules()) {
+            LOGGER.info("module: " + module.name());
+            for (var annotation : module.annotations()) {
+                LOGGER.info("  annotation: " + annotation.name());
+            }
+        }
+
+        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(SQL_REPOSITORY)) {
+            AnnotationTarget annotationTarget = repositoryDeclaration.target();
+            if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
+                DotName dotName = annotationTarget.asClass().name();
+                LOGGER.info(dotName + " is class");
+            } else if (AnnotationTarget.Kind.TYPE.equals(annotationTarget.kind())) {
+                var targetType = annotationTarget.asType().toString();
+                LOGGER.info(targetType + " is type");
+            } else {
+                var kind = annotationTarget.kind();
+                var target = repositoryDeclaration.name();
+                LOGGER.warn(target + " has kind " + kind);
+            }
+            System.out.println("found element with annotation " + SQL.Repository.class.getName() + ": " + repositoryDeclaration.name());
+        }
+    }
+
+
+    @BuildStep
+    void analizeAnnotationsFromArchiveIndex() {
+        LOGGER.info("Before analize annotations from achive index");
+        DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
+        IndexView index = beanArchiveIndexBuildItem.getIndex();
+
+        for (var module : index.getKnownModules()) {
+            LOGGER.info("module: " + module.name());
+            for (var annotation : module.annotations()) {
+                LOGGER.info("  annotation: " + annotation.name());
+            }
+        }
+
+        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(SQL_REPOSITORY)) {
+            AnnotationTarget annotationTarget = repositoryDeclaration.target();
+            if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
+                DotName dotName = annotationTarget.asClass().name();
+                LOGGER.info(dotName + " is class");
+            } else if (AnnotationTarget.Kind.TYPE.equals(annotationTarget.kind())) {
+                var targetType = annotationTarget.asType().toString();
+                LOGGER.info(targetType + " is type");
+            } else {
+                var kind = annotationTarget.kind();
+                var target = repositoryDeclaration.name();
+                LOGGER.warn(target + " has kind " + kind);
+            }
+            System.out.println("found element with annotation " + SQL.Repository.class.getName() + ": " + repositoryDeclaration.name());
+        }
+    }
+
     @BuildStep
     void generatedBean(BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
         ClassOutput beansClassOutput = new GeneratedBeanGizmoAdaptor(generatedBeans);
@@ -53,30 +118,6 @@ public class GluonExtensionProcessor {
             method.returnValue(val);
         }
 
-        LOGGER.info("Before analize annotations");
-        DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
-        IndexView index = combinedIndexBuildItem.getIndex();
-        for (var module : index.getKnownModules()) {
-            LOGGER.info("module: " + module.name());
-            for (var annotation : module.annotations()) {
-                LOGGER.info("  annotation: " + annotation.name());
-            }
-        }
-        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(SQL_REPOSITORY)) {
-            AnnotationTarget annotationTarget = repositoryDeclaration.target();
-            if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
-                DotName dotName = annotationTarget.asClass().name();
-                LOGGER.info(dotName + " is class");
-            } else if (AnnotationTarget.Kind.TYPE.equals(annotationTarget.kind())) {
-                var targetType = annotationTarget.asType().toString();
-                LOGGER.info(targetType + " is type");
-            } else {
-                var kind = annotationTarget.kind();
-                var target = repositoryDeclaration.name();
-                LOGGER.warn(target + " has kind " + kind);
-            }
-            System.out.println("found element with annotation " + SQL.Repository.class.getName() + ": " + repositoryDeclaration.name());
-        }
     }
 
 }
