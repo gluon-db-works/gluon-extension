@@ -51,8 +51,8 @@ public class GluonExtensionProcessor {
 
         DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
         IndexView index = combinedIndexBuildItem.getIndex();
-        for (AnnotationInstance deserializeInstance : index.getAnnotations(SQL_REPOSITORY)) {
-            AnnotationTarget annotationTarget = deserializeInstance.target();
+        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(SQL_REPOSITORY)) {
+            AnnotationTarget annotationTarget = repositoryDeclaration.target();
             if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
                 DotName dotName = annotationTarget.asClass().name();
                 LOG.info(dotName + " is class");
@@ -64,6 +64,7 @@ public class GluonExtensionProcessor {
                 var target = annotationTarget.toString();
                 LOG.info(target + " has kind " + kind);
             }
+            System.out.printf("found element with annotation " + SQL.Repository.class.getName());
         }
     }
 

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 public class SQL {
 
     @Target(ElementType.TYPE)
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(RetentionPolicy.CLASS)
     public @interface Repository {
     }
 
