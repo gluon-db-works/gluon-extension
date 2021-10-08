@@ -37,6 +37,7 @@ public class GluonExtensionProcessor {
 
     @BuildStep
     void addDependencies(BuildProducer<IndexDependencyBuildItem> indexDependency) {
+        LOGGER.info("addDependencies to application index");
         indexDependency.produce(new IndexDependencyBuildItem("org.gluon", "gluon-extension"));
     }
 
