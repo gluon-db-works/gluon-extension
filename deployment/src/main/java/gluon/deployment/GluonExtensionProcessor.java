@@ -2,6 +2,7 @@ package gluon.deployment;
 
 import gluon.annotations.SQL;
 import gluon.runtime.utils.ISayHello;
+import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -30,9 +31,17 @@ public class GluonExtensionProcessor {
 
     private static final Logger LOGGER = Logger.getLogger(GluonExtensionProcessor.class);
 
+    private static final DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
+
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
+    }
+
+    @BuildStep
+    BeanDefiningAnnotationBuildItem additionalBeanDefiningAnnotation() {
+        LOGGER.info("additionalBeanDefiningAnnotation to application index");
+        return new BeanDefiningAnnotationBuildItem(SQL_REPOSITORY);
     }
 
     @BuildStep
@@ -44,7 +53,6 @@ public class GluonExtensionProcessor {
     @BuildStep
     void analizeAnnotationsFromApplicationIndex(ApplicationIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
         LOGGER.info("Before analize annotations from application index");
-        DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
         IndexView index = combinedIndexBuildItem.getIndex();
 
         for (var module : index.getKnownModules()) {
