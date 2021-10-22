@@ -1,4 +1,4 @@
-package gluon.runtime.sql;
+package gluon.runtime.sql.core;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

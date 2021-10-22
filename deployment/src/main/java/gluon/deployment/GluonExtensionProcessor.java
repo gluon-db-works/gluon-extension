@@ -1,10 +1,13 @@
 package gluon.deployment;
 
 import gluon.annotations.SQL;
+import gluon.runtime.sql.Connection;
+import gluon.runtime.sql.Repository;
 import gluon.runtime.utils.ISayHello;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanGizmoAdaptor;
+import io.quarkus.arc.processor.BeanRegistrar;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.ApplicationIndexBuildItem;
@@ -31,7 +34,8 @@ public class GluonExtensionProcessor {
 
     private static final Logger LOGGER = Logger.getLogger(GluonExtensionProcessor.class);
 
-    private static final DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
+    private static final DotName CONNECTION = DotName.createSimple(Connection.class.getName());
+    private static final DotName REPOSITORY = DotName.createSimple(Repository.class.getName());
 
     @BuildStep
     FeatureBuildItem feature() {
@@ -41,7 +45,7 @@ public class GluonExtensionProcessor {
     @BuildStep
     BeanDefiningAnnotationBuildItem additionalBeanDefiningAnnotation() {
         LOGGER.info("additionalBeanDefiningAnnotation to application index");
-        return new BeanDefiningAnnotationBuildItem(SQL_REPOSITORY);
+        return new BeanDefiningAnnotationBuildItem(CONNECTION);
     }
 
     @BuildStep
@@ -51,7 +55,7 @@ public class GluonExtensionProcessor {
     }
 
     @BuildStep
-    void analizeAnnotationsFromApplicationIndex(ApplicationIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
+    void analizeAnnotationsFromApplicationIndex(ApplicationIndexBuildItem combinedIndexBuildItem) {
         LOGGER.info("Before analize annotations from application index");
         IndexView index = combinedIndexBuildItem.getIndex();
 
@@ -62,7 +66,7 @@ public class GluonExtensionProcessor {
             }
         }
 
-        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(SQL_REPOSITORY)) {
+        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(CONNECTION)) {
             AnnotationTarget annotationTarget = repositoryDeclaration.target();
             if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
                 DotName dotName = annotationTarget.asClass().name();
@@ -75,14 +79,14 @@ public class GluonExtensionProcessor {
                 var target = repositoryDeclaration.name();
                 LOGGER.warn(target + " has kind " + kind);
             }
-            System.out.println("found element with annotation " + SQL.Repository.class.getName() + ": " + repositoryDeclaration.name());
+            System.out.println("found element with annotation " + CONNECTION + ": " + repositoryDeclaration.name());
         }
+
     }
 
     @BuildStep
-    void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
+    void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem) {
         LOGGER.info("Before analize annotations from combined index");
-        DotName SQL_REPOSITORY = DotName.createSimple(SQL.Repository.class.getName());
         IndexView index = combinedIndexBuildItem.getIndex();
 
         for (var module : index.getKnownModules()) {
@@ -92,7 +96,14 @@ public class GluonExtensionProcessor {
             }
         }
 
-        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(SQL_REPOSITORY)) {
+        for (var repo : index.getAllKnownSubclasses(REPOSITORY)) {
+            LOGGER.info("repository: " + repo.name());
+            for (var annotation : repo.annotations().keySet()) {
+                LOGGER.info("    annotation: " + annotation);
+            }
+        }
+
+        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(CONNECTION)) {
             AnnotationTarget annotationTarget = repositoryDeclaration.target();
             if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
                 DotName dotName = annotationTarget.asClass().name();
@@ -105,7 +116,7 @@ public class GluonExtensionProcessor {
                 var target = repositoryDeclaration.name();
                 LOGGER.warn(target + " has kind " + kind);
             }
-            System.out.println("found element with annotation " + SQL.Repository.class.getName() + ": " + repositoryDeclaration.name());
+            System.out.println("found element with annotation " + CONNECTION + ": " + repositoryDeclaration.name());
         }
     }
 
