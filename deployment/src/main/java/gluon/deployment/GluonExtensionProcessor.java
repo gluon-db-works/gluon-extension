@@ -55,69 +55,20 @@ public class GluonExtensionProcessor {
     }
 
     @BuildStep
-    void analizeAnnotationsFromApplicationIndex(ApplicationIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
-        LOGGER.info("Before analize annotations from application index");
-        IndexView index = combinedIndexBuildItem.getIndex();
-
-        for (var module : index.getKnownModules()) {
-            LOGGER.info("module: " + module.name());
-            for (var annotation : module.annotations()) {
-                LOGGER.info("  annotation: " + annotation.name());
-            }
-        }
-
-        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(CONNECTION)) {
-            AnnotationTarget annotationTarget = repositoryDeclaration.target();
-            if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
-                DotName dotName = annotationTarget.asClass().name();
-                LOGGER.info(dotName + " is class");
-            } else if (AnnotationTarget.Kind.TYPE.equals(annotationTarget.kind())) {
-                var targetType = annotationTarget.asType().toString();
-                LOGGER.info(targetType + " is type");
-            } else {
-                var kind = annotationTarget.kind();
-                var target = repositoryDeclaration.name();
-                LOGGER.warn(target + " has kind " + kind);
-            }
-            System.out.println("found element with annotation " + CONNECTION + ": " + repositoryDeclaration.name());
-        }
-
-    }
-
-    @BuildStep
     void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
         LOGGER.info("Before analize annotations from combined index");
         IndexView index = combinedIndexBuildItem.getIndex();
 
-        for (var module : index.getKnownModules()) {
-            LOGGER.info("module: " + module.name());
-            for (var annotation : module.annotations()) {
-                LOGGER.info("  annotation: " + annotation.name());
-            }
-        }
-
         for (var repo : index.getAllKnownSubclasses(REPOSITORY)) {
-            LOGGER.info("repository: " + repo.name());
+            LOGGER.info("repository: " + repo.name() + "lkind: " + repo.kind());
+            for (var annotation : repo.classAnnotations()) {
+                LOGGER.info("    class annotation: " + annotation);
+            }
             for (var annotation : repo.annotations().keySet()) {
                 LOGGER.info("    annotation: " + annotation);
             }
         }
 
-        for (AnnotationInstance repositoryDeclaration : index.getAnnotations(CONNECTION)) {
-            AnnotationTarget annotationTarget = repositoryDeclaration.target();
-            if (AnnotationTarget.Kind.CLASS .equals(annotationTarget.kind())) {
-                DotName dotName = annotationTarget.asClass().name();
-                LOGGER.info(dotName + " is class");
-            } else if (AnnotationTarget.Kind.TYPE.equals(annotationTarget.kind())) {
-                var targetType = annotationTarget.asType().toString();
-                LOGGER.info(targetType + " is type");
-            } else {
-                var kind = annotationTarget.kind();
-                var target = repositoryDeclaration.name();
-                LOGGER.warn(target + " has kind " + kind);
-            }
-            System.out.println("found element with annotation " + CONNECTION + ": " + repositoryDeclaration.name());
-        }
     }
 
     @BuildStep
