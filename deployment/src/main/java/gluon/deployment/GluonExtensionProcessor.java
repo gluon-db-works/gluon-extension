@@ -55,7 +55,7 @@ public class GluonExtensionProcessor {
     }
 
     @BuildStep
-    void analizeAnnotationsFromApplicationIndex(ApplicationIndexBuildItem combinedIndexBuildItem) {
+    void analizeAnnotationsFromApplicationIndex(ApplicationIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
         LOGGER.info("Before analize annotations from application index");
         IndexView index = combinedIndexBuildItem.getIndex();
 
@@ -85,7 +85,7 @@ public class GluonExtensionProcessor {
     }
 
     @BuildStep
-    void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem) {
+    void analizeAnnotationsFromCombinedIndex(CombinedIndexBuildItem combinedIndexBuildItem, BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
         LOGGER.info("Before analize annotations from combined index");
         IndexView index = combinedIndexBuildItem.getIndex();
 
@@ -122,6 +122,7 @@ public class GluonExtensionProcessor {
 
     @BuildStep
     void generatedBean(BuildProducer<GeneratedBeanBuildItem> generatedBeans) {
+        LOGGER.info("generatedBean BuildStep");
         ClassOutput beansClassOutput = new GeneratedBeanGizmoAdaptor(generatedBeans);
 
         try (var classCreator = ClassCreator.builder().classOutput(beansClassOutput)
